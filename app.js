@@ -12,9 +12,6 @@
 		list.searchTerm = "";
 		list.items = [];
 		list.onRemove = function(index) {
-			console.log("'this' is: ", this);
-/*			this.lastRemoved = "Last item removed was "
-					+ this.items[itemIndex].name;*/
 			list.items.splice(index, 1);
 		};
 		list.getMatchedItems = function(searchTerm) {
@@ -23,7 +20,7 @@
 				 if(searchTerm === undefined || searchTerm === '') return;
 				 var found = [];
 				for(var idx  in list.items){
-					if(list.items[idx].name.indexOf(searchTerm) !== -1){
+					if(list.items[idx].name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1){
 						found.push(list.items[idx]);
 					}
 				}

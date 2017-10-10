@@ -6,21 +6,24 @@
 			.directive('foundItems', FoundItemsDirective).service(
 					'MenuSearchService', MenuSearchService);
 
-	NarrowItDownController.$inject = [ 'MenuSearchService' ];
-	function NarrowItDownController(MenuSearchService) {
+	NarrowItDownController.$inject = [ 'MenuSearchService','$scope' ];
+	function NarrowItDownController(MenuSearchService, $scope) {
 		var list = this;
 		list.searchTerm = "";
 		list.items = [];
 		list.onRemove = function(index) {
 			list.items.splice(index, 1);
 		};
-		list.getMatchedItems = function(searchTerm) {
-			MenuSearchService.getMatchedMenuItems(searchTerm).then(function(response){
+		list.getMatchedItems = function() {
+			MenuSearchService.getMatchedMenuItems(list.searchTerm ).then(function(response){				 
+				 if(list.searchTerm  === undefined || list.searchTerm  === '') {
+					 list.items=[];
+					 return;
+				 }
 				 list.items  = response.data.menu_items;
-				 if(searchTerm === undefined || searchTerm === '') return;
 				 var found = [];
 				for(var idx  in list.items){
-					if(list.items[idx].name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1){
+					if(list.items[idx].description.toLowerCase().indexOf(list.searchTerm.toLowerCase()) !== -1){
 						found.push(list.items[idx]);
 					}
 				}
@@ -52,10 +55,29 @@
 				items : '<',
 				onRemove : '&'
 			},
-			templateUrl : 'listItem.html'
+			templateUrl : 'listItem.html',
+			controller:FoundItemsDirectiveController,
+			bindToController:true,
+			controllerAs:'list',
+			link: FoundItemsDirectiveLink
+
 		};
 		return ddo;
 	}
-
-
+	
+	function FoundItemsDirectiveController(){	
+	}
+	
+	function FoundItemsDirectiveLink(scope,element, attrs, controller){
+		scope.$watch('list.items',function(oldVal, newVal){
+			if(newVal !== oldVal){
+				if(controller.items.length == 0){
+					element.find('div.error').css('display','block');
+				}else{
+					element.find('div.error').css('display','none');
+				}
+			}
+		});
+	}
+	
 })();

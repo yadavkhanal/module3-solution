@@ -1,8 +1,16 @@
-<div style="clear: both;" ng-show="items.length > 0">
-	<ol>
-		<li ng-repeat="item in items">{{ item.name }} <span>&nbsp;</span>
-			<button ng-click="onRemove({index: $index})">Don't want this
-				one</button>
+<div style="clear: both;" ng-show="list.items.length > 0">
+	<ul>
+		<li ng-repeat="item in list.items" style="list-style-type: none">
+			<div class="panel panel-default">
+				<div class="panel panel-heading">
+					{{item.short_name}}
+					<div>{{item.name}}</div>
+				</div>
+				<div class="panel-body">{{item.description}}</div>
+				<button ng-click="list.onRemove({index: $index})" class="panel-footer">Don't want
+					this one</button>
+			</div>
 		</li>
-	</ol>
+	</ul>
 </div>
+<div class="error" style="clear: both;"> Nothing found</div>
